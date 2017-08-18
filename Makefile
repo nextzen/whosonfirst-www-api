@@ -40,6 +40,9 @@ mapzenjs:
 	curl -s -o www/javascript/mapzen.js https://mapzen.com/js/mapzen.js
 	curl -s -o www/javascript/mapzen.min.js https://mapzen.com/js/mapzen.min.js
 
+vizjs:
+	curl -L -s -o www/javascript/viz-lite.js https://github.com/mdaines/viz.js/releases/download/v1.8.0/viz-lite.js
+
 chrome:
 	curl -s -o www/css/mapzen.whosonfirst.chrome.css https://raw.githubusercontent.com/whosonfirst/css-mapzen-whosonfirst/master/css/mapzen.whosonfirst.chrome.css
 	curl -s -o www/javascript/mapzen.whosonfirst.chrome.js https://raw.githubusercontent.com/whosonfirst/js-mapzen-whosonfirst/master/src/mapzen.whosonfirst.chrome.js

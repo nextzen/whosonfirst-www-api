@@ -18,12 +18,35 @@
 
 <div class="row">
 <p>This is a <span class="hey-look">{$wof_placetype|@escape}</span> and its Who's On First ID is <a href="{$place|@whosonfirst_places_url_for_place}" class="hey-look">{$wof_id|@escape}</a>.{if $wof_parent_id != -1} It is parented by <a href="{$place|@whosonfirst_places_property:"wof:parent"|@whosonfirst_places_url_for_place}" class="hey-look">{$wof_parent_name|@escape}</a>.{/if}</p>
+
+<div id="viz-hierarchy" data-wof-id="" data-wof-placetype="" data-wof-hierarchy=""></div>
 </div>
 
 {literal}
 <script>
 window.addEventListener("load", function load(event){
 	mapzen.places.map.draw_place_map("map");
+});
+</script>
+{/literal}
+
+<script src="{$cfg.abs_root_url}javascript/viz-lite.js"></script>
+
+{literal}
+<script>
+window.addEventListener("load", function load(event){
+
+	try {				
+	        var result = Viz("digraph { a -> b; }", { format: "png-image-element", scale: 2 });
+	}
+
+	catch(e){
+		console.log("VIZ", "failed to render digraph", e);
+		return false;
+	}
+
+	var wrapper = document.getElementById("viz-hierarchy");
+	wrapper.appendChild(result);
 });
 </script>
 {/literal}
