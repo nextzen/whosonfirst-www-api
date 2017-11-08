@@ -503,4 +503,11 @@
 
 	$GLOBALS['cfg']['enable_feature_soundbox'] = 0;
 
+	$GLOBALS['cfg']['enable_feature_api_soundbox_keys'] = 0;
+	$GLOBALS['cfg']['enable_feature_api_soundbox_tokens'] = 0;
+
+	$GLOBALS['cfg']['api_soundbox_keys_ttl'] = 1800;		# 30 minute
+	$GLOBALS['cfg']['api_soundbox_tokens_ttl'] = 1800;		# 30 minutes
+	$GLOBALS['cfg']['api_soundbox_tokens_user_ttl'] = 3600;		# 1 hour
+
 	# END OF soundbox stuff

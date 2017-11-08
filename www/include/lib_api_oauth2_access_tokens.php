@@ -551,6 +551,80 @@
 		return $rsp;
 	}
 
+	function api_oauth2_access_tokens_fetch_soundbox_token($user=null){
+
+		$now = time();
+
+		$soundbox_token = api_oauth2_access_tokens_get_site_token($user);
+
+		if ($soundbox_token){
+
+			$valid_key = 1;
+			$valid_token = 1;
+
+			$key = api_keys_get_by_id($soundbox_token['api_key_id']);
+
+			if (! $key){
+				$valid_key = 0;
+			}
+
+			else if ($key['deleted']){
+				$valid_key = 0;
+			}
+
+			else if (($key['expires']) && ($key['expires'] <= $now)){
+				$valid_key = 0;
+			}
+
+			else if ($site_token['expires'] <= $now){
+				$valid_token = 0;
+			}
+
+			# Now we check to see if either the key or the token will
+			# expire in <some unknown amount of time that a user will
+			# stay on the page...> and just create new ones if so.
+
+			else {
+
+				$ttl_key = $key['expires'] - $now;
+				$ttl_token = $site_token['expires'] - $now;
+
+				if ($ttl_key < 300){
+					$valid_key = 0;
+				}  
+
+				if ($ttl_token < 300){
+					$valid_token = 0;
+				}  
+			}
+
+			if ((! $valid_key) || (! $valid_token)){
+
+				$rsp = api_oauth2_access_tokens_delete($soundbox_token);
+
+				$user_id = ($user) ? $user['id'] : 0;
+				$cache_key = "oauth2_access_token_soundbox_{$user_id}";
+				cache_unset($cache_key);
+
+				$site_token = null;
+			}
+		}
+
+		# TO DO: error handling / reporting
+
+
+		if (! $soundbox_token){
+
+			$perms = 0;
+			$ttl = 120;
+
+			$rsp = api_oauth2_access_tokens_create_soundbox_token($user, $perm, $ttl);
+			$soundbox_token = $rsp['token'];
+		}
+
+		return $soundbox_token;
+	}
+
 	#################################################################
 
 	# API explorer

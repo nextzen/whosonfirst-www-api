@@ -600,6 +600,16 @@
 				$token = api_oauth2_access_tokens_fetch_site_token($GLOBALS['cfg']['user']);
 				$GLOBALS['smarty']->assign_by_ref("site_token", $token['access_token']);
 			}
+
+			if (features_is_enabled(array("soundbox", "api_soundbox_keys", "api_soundbox_tokens"))){
+
+				loadlib("api_keys");
+				loadlib("api_oauth2_access_tokens");
+
+				$token = api_oauth2_access_tokens_fetch_soundbox_token($GLOBALS['cfg']['user']);
+				$GLOBALS['smarty']->assign_by_ref("soundbox_token", $token['access_token']);
+			}
+
 		}
 
 	}
