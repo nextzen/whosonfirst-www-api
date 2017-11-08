@@ -499,3 +499,8 @@
 
 	# END OF chatterbox stuff
 
+	# START OF soundbox stuff
+
+	$GLOBALS['cfg']['enable_feature_soundbox'] = 0;
+
+	# END OF soundbox stuff
