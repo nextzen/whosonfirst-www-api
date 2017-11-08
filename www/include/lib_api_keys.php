@@ -11,6 +11,7 @@
 			1 => 'site',
 			2 => 'api_explorer',
 			3 => 'infrastructure',
+			4 => 'soundbox',
 		);
 
 		if ($string_keys){
@@ -462,6 +463,77 @@
 			cache_unset('api_key_site_key');
 		}
 
+		return $rsp;
+	}
+
+	#################################################################
+
+	function api_keys_create_soundbox_key(&$user, $created_by){
+
+		$id = dbtickets_create(64);
+
+		$role_map = api_keys_roles_map('string keys');
+		$role_id = $role_map['soundbox'];
+
+		$key = api_keys_generate_key();
+		$secret = random_string(64);
+
+		$now = time();
+
+		$key_row = array(
+			'id' => $id,
+			'user_id' => $user["id"],
+			'role_id' => $role_id,
+			'api_key' => $key,
+			'app_secret' => $secret,
+			'created' => $now,
+			'last_modified' => $now,
+			'app_title' => "soundbox",
+			'created_by' => $created_by,
+		);
+
+		$insert = array();
+
+		foreach ($key_row as $k => $v){
+			$insert[$k] = AddSlashes($v);
+		}
+
+		$rsp = db_insert('ApiKeys', $insert);
+
+		if ($rsp['ok']){
+			$rsp['key'] = $key_row;
+		}
+
+		return $rsp;
+	}
+
+	#################################################################
+
+	function api_keys_get_soundbox_keys(&$user, $more=array()){
+
+		$defaults = array(
+			'ensure_active' => 1,
+		);
+
+		$more = array_merge($defaults, $more);
+
+		$map = api_keys_roles_map('string keys');
+		$role = $map['soundbox'];
+
+		$user_id = $user["id"];
+
+		$enc_user = AddSlashes($user_id);
+		$enc_role = AddSlashes($role);
+
+		$sql = "SELECT * FROM ApiKeys WHERE user_id='{$enc_user}' AND role_id='{$enc_role}'";
+
+		if ($more['ensure_active']){
+			$sql .= " AND deleted=0";
+		}
+
+		$sql .= " ORDER BY created DESC";
+
+		$rsp = db_fetch_paginated($sql, $more);
 		return $rsp;
 	}
 

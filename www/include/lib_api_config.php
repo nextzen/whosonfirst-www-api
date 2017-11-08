@@ -380,6 +380,7 @@
 	#	"enabled" => 1,
 	#	"requires_blessing" => 0,
 	#	"requires_key_role" => array("site"),
+	#	"denies_key_role" => array("soundbox"),
 	#	"requires_user_role" => array("staff"),
 	#
 	# As in: require a site key for someone who is staff
@@ -388,6 +389,18 @@
 	function api_config_ensure_roles(&$method, &$key, &$token){
 
 		$roles_map = api_keys_roles_map();
+
+		# EXPERIMENTAL - I AM NOT SURE ABOUT THIS YET...
+		# (20171107/thisisaaronland)
+
+		if (is_array($method['denies_key_role'])){
+
+			if (in_array($role, $method['deny_key_role'])){
+				api_output_error(403, "Insufficient permissions for API key");
+			}
+		}
+
+		# END OF EXPERIMENTAL - I AM NOT SURE ABOUT THIS YET...
 
 		if (is_array($method['requires_key_role'])){
 

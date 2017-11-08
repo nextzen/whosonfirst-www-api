@@ -509,6 +509,50 @@
 
 	#################################################################
 
+	# Soundbox tokens
+
+	function api_oauth2_access_tokens_create_soundbox_token(&$api_key, $perms, $ttl=0){
+
+		$id = dbtickets_create(64);
+
+		$token = api_oauth2_access_tokens_generate_token();
+
+		$expires = 0;
+
+		if ($ttl){
+			$now = time();
+			$expires = $now + $ttl;
+		}
+
+		$row = array(
+			'id' => $id,
+			'perms' => $perms,
+			'api_key_id' => $api_key['id'],
+			'api_key_role_id' => $api_key['role_id'],
+			'user_id' => 0,
+			'access_token' => $token,
+			'created' => $now,
+			'last_modified' => $now,
+			'expires' => $expires,
+		);
+
+		$insert = array();
+
+		foreach ($row as $k => $v){
+			$insert[$k] = AddSlashes($v);
+		}
+
+		$rsp = db_insert('OAuth2AccessTokens', $insert);
+
+		if ($rsp['ok']){
+			$rsp['token'] = $row;
+		}
+
+		return $rsp;
+	}
+
+	#################################################################
+
 	# API explorer
 
 	function api_oauth2_access_tokens_fetch_api_explorer_token($user=null){
